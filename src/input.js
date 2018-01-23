@@ -1,3 +1,4 @@
+
 function Input() {
     self = this;
 

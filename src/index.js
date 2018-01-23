@@ -8,28 +8,61 @@ var input = new Input();
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement)
+//texture
 
-var geometry = new THREE.BoxGeometry(1, 2, 1);
-var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-var cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
 
-camera.position.z = 5; 
+var cube;
+let addTexture = function () {
+    var textureLoader = new THREE.TextureLoader();
+    // we've gotta set this to use cross-origin images
+    // load in the image
+    textureLoader.crossOrigin = '';
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    textureLoader.load('https://s3-us-west-2.amazonaws.com/s.cdpn.io/53148/4268-bump.jpg', function (bumpMap) {
+        // apply the texture as a bump map
+        textureLoader.load('https://threejs.org/examples/textures/crate.gif', function(texture) {
+          // set the texture as the map for the material
+            var material = new THREE.MeshPhongMaterial({ map: texture, bumpMap: bumpMap} );
+          cube = new THREE.Mesh(geometry, material);
+          scene.add(cube);
+        });
+    });
 
-function animate() {
+}
+addTexture();
+
+//cube
+
+
+
+var light = new THREE.PointLight(0xFFFF00);
+light.position.set(-5, 5, 4);
+scene.add(light)
+
+camera.position.z = 3; 
+
+var lastTs = 0;
+function animate(ts) {
     requestAnimationFrame(animate);
+
+    var timeDelta = (ts - lastTs)/1000;
+    lastTs = ts;
+
+    var movementSpeed = 5*timeDelta;
+
     if(input.isLeftPressed) {
-        cube.position.x -= 0.1;
+        cube.position.x -= movementSpeed;
     }
     if(input.isRightPressed) {
-        cube.position.x += 0.1;
+        cube.position.x += movementSpeed;
     }
     if(input.isUpPressed) {
-        cube.position.y += 0.1;
+        cube.position.y += movementSpeed;
     }
     if(input.isDownPressed) {
-        cube.position.y -= 0.1;
+        cube.position.y -= movementSpeed;
     }
     renderer.render(scene, camera);
 }
-animate();
+requestAnimationFrame(animate);
+ 
