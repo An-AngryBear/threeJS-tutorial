@@ -70,11 +70,14 @@
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_three__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__input__ = __webpack_require__(2);
+
 
 
 const scene = new __WEBPACK_IMPORTED_MODULE_0_three__["e" /* Scene */]();
 const camera = new __WEBPACK_IMPORTED_MODULE_0_three__["d" /* PerspectiveCamera */](75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
+var input = new __WEBPACK_IMPORTED_MODULE_1__input__["a" /* Input */]();     
 var renderer = new __WEBPACK_IMPORTED_MODULE_0_three__["f" /* WebGLRenderer */]();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement)
@@ -84,15 +87,26 @@ var material = new __WEBPACK_IMPORTED_MODULE_0_three__["c" /* MeshBasicMaterial 
 var cube = new __WEBPACK_IMPORTED_MODULE_0_three__["b" /* Mesh */](geometry, material);
 scene.add(cube);
 
-camera.position.z = 5;
+camera.position.z = 5; 
 
 function animate() {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    if(input.isLeftPressed) {
+        cube.position.x -= 0.1;
+    }
+    if(input.isRightPressed) {
+        cube.position.x += 0.1;
+    }
+    if(input.isUpPressed) {
+        cube.position.y += 0.1;
+    }
+    if(input.isDownPressed) {
+        cube.position.y -= 0.1;
+    }
     renderer.render(scene, camera);
 }
 animate();
+
 
 /***/ }),
 /* 1 */
@@ -46074,6 +46088,45 @@ function CanvasRenderer() {
 
 
 
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Input; });
+function Input() {
+    self = this;
+
+    self.LeftPressed = false;
+    self.RightPressed = false;
+    self.isUpPressed = false;
+    self.isDownPressed = false;
+
+    function handleKeyEvent(e, isKeyDown) {
+        if(e.keyCode == 65) {
+            self.isLeftPressed = isKeyDown
+        }
+        if(e.keyCode == 68) {
+            self.isRightPressed = isKeyDown
+        }
+        if(e.keyCode == 87) {
+            self.isUpPressed = isKeyDown
+        }
+        if(e.keyCode == 83) {
+            self.isDownPressed = isKeyDown
+        }
+    } 
+    
+    document.addEventListener("keydown", function(e) {
+         handleKeyEvent(e, true) 
+    }) 
+    document.addEventListener("keyup", function(e) { 
+         handleKeyEvent(e, false) 
+    }) 
+} 
+ 
+ 
 
 /***/ })
 /******/ ]);
